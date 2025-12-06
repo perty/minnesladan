@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <title>Minneslådan – test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            margin: 0;
+            padding: 1.5rem;
+            background: #f5f5f5;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 1.6rem;
+        }
+
+        label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 80px;
+            resize: vertical;
+            padding: 0.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+
+        button {
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            border-radius: 4px;
+            border: 1px solid #007bff;
+            background: #007bff;
+            color: #ffffff;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.7;
+            cursor: default;
+        }
+
+        .status {
+            margin-top: 0.75rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .results {
+            margin-top: 1.5rem;
+        }
+
+        .paragraph {
+            padding: 0.75rem 0;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .paragraph:first-child {
+            border-top: none;
+        }
+
+        .paragraph-meta {
+            font-size: 0.8rem;
+            color: #888;
+            margin-bottom: 0.25rem;
+        }
+
+        .paragraph-content {
+            white-space: pre-wrap;
+        }
+
+        .error {
+            color: #c00;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Minneslådan – kontexttest</h1>
+
+    <div>
+        <label for="question">Fråga</label>
+        <textarea id="question" placeholder="Skriv en fråga om livshistorien här..."></textarea>
+        <button id="askButton">Hämta relevanta stycken</button>
+        <div id="status" class="status"></div>
+    </div>
+
+    <div class="results">
+        <h2>Resultat</h2>
+        <div id="resultsContainer"></div>
+    </div>
+</div>
+
+<script>
+    const questionInput = document.getElementById('question');
+    const askButton = document.getElementById('askButton');
+    const statusEl = document.getElementById('status');
+    const resultsContainer = document.getElementById('resultsContainer');
+
+    askButton.addEventListener('click', async () => {
+        const question = questionInput.value.trim();
+        if (!question) {
+            statusEl.textContent = 'Skriv en fråga först.';
+            statusEl.classList.remove('error');
+            return;
+        }
+
+        askButton.disabled = true;
+        statusEl.textContent = 'Skickar fråga...';
+        statusEl.classList.remove('error');
+        resultsContainer.innerHTML = '';
+
+        try {
+            const response = await fetch('/api/context/query', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ question })
+            });
+
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
+            }
+
+            const data = await response.json();
+            renderResults(data);
+            statusEl.textContent = 'Klar. Hittade ' + (data.paragraphs?.length || 0) + ' stycken.';
+        } catch (err) {
+            console.error(err);
+            statusEl.textContent = 'Något gick fel: ' + err.message;
+            statusEl.classList.add('error');
+        } finally {
+            askButton.disabled = false;
+        }
+    });
+
+    function renderResults(data) {
+        resultsContainer.innerHTML = '';
+
+        if (!data.paragraphs || data.paragraphs.length === 0) {
+            resultsContainer.textContent = 'Inga stycken hittades.';
+            return;
+        }
+
+        data.paragraphs.forEach(p => {
+            const div = document.createElement('div');
+            div.className = 'paragraph';
+
+            const meta = document.createElement('div');
+            meta.className = 'paragraph-meta';
+            meta.textContent = `${p.section || 'Okänd sektion'} · position ${p.position ?? '?'} · id ${p.id}`;
+
+            const content = document.createElement('div');
+            content.className = 'paragraph-content';
+            content.textContent = p.content;
+
+            div.appendChild(meta);
+            div.appendChild(content);
+            resultsContainer.appendChild(div);
+        });
+    }
+</script>
+</body>
+</html>

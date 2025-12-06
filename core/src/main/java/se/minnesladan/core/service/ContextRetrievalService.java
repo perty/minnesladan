@@ -5,18 +5,21 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import se.minnesladan.core.database.Paragraph;
-import se.minnesladan.core.database.ParagraphRepository;
+import se.minnesladan.core.database.ParagraphSearchRepository;
 
 @Service
 public class ContextRetrievalService {
-    private final ParagraphRepository repo;
+    private final ParagraphSearchRepository searchRepository;
+    private final EmbeddingService embeddingService;
 
-    public ContextRetrievalService(ParagraphRepository repo) {
-        this.repo = repo;
+    public ContextRetrievalService(ParagraphSearchRepository searchRepository,
+                                   EmbeddingService embeddingService) {
+        this.searchRepository = searchRepository;
+        this.embeddingService = embeddingService;
     }
 
     public List<Paragraph> findRelevantParagraphs(String question, int limit) {
-        // TODO: ersätt detta med embedding + pgvector
-        return repo.findAll().stream().limit(limit).toList();
+        float[] queryEmbedding = embeddingService.createEmbedding(question);
+        return searchRepository.findNearest(queryEmbedding, limit);
     }
 }
