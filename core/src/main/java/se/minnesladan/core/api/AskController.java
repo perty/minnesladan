@@ -19,7 +19,7 @@ public class AskController {
 
     @PostMapping("/ask")
     public AskResponse ask(@RequestBody AskRequest request) {
-        var result = askService.ask(request.getQuestion(), request.getContextLimit());
+        var result = askService.ask(request.question(), request.contextLimit());
         return new AskResponse(
                 result.question(),
                 result.answer(),
