@@ -1,4 +1,4 @@
-package se.minnesladan.core.service;
+package se.minnesladan.core.memory;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

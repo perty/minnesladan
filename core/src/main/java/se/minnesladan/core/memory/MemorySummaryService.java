@@ -1,4 +1,4 @@
-package se.minnesladan.core.service;
+package se.minnesladan.core.memory;
 
 import org.springframework.stereotype.Service;
 import se.minnesladan.core.llm.*;

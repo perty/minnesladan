@@ -10,8 +10,8 @@ spring:
 minnesladan:
   llm:
     cloud:
-      api-url: https://api.example.com/v1/chat/completions
-      api-key: YOUR_API_KEY
+      api-url: https://api.openai.com/v1/chat/completions
+      api-key: ${OPENAI_API_KEY}
       model:
         high-capability: gpt-5.1
-        low-cost: gpt-5.1-mini
+        low-cost: gpt-4.1-mini

@@ -23,10 +23,14 @@ public class CloudLlmClient implements LlmClient {
     private final Map<ModelTier, String> modelPerTier;
 
     public CloudLlmClient(
-            @Value("${minnesladan.llm.cloud.api-url}") URI apiUrl,
-            @Value("${minnesladan.llm.cloud.api-key}") String apiKey,
-            @Value("${minnesladan.llm.cloud.model.high-capability}") String highCapabilityModel,
-            @Value("${minnesladan.llm.cloud.model.low-cost}") String lowCostModel
+            @Value("${minnesladan.llm.cloud.api-url:https://api.openai.com/v1/chat/completions}")
+            URI apiUrl,
+            @Value("${minnesladan.llm.cloud.api-key}")
+            String apiKey,
+            @Value("${minnesladan.llm.cloud.model.high-capability:gpt-5.1}")
+            String highCapabilityModel,
+            @Value("${minnesladan.llm.cloud.model.low-cost:gpt-4.1-mini}")
+            String lowCostModel
     ) {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
@@ -36,7 +40,7 @@ public class CloudLlmClient implements LlmClient {
         this.modelPerTier = new EnumMap<>(ModelTier.class);
         this.modelPerTier.put(ModelTier.HIGH_CAPABILITY, highCapabilityModel);
         this.modelPerTier.put(ModelTier.LOW_COST, lowCostModel);
-        // ON_PREM hanteras inte här
+        // ON_PREM hanteras av OnPremLlmClient
     }
 
     @Override
@@ -50,6 +54,7 @@ public class CloudLlmClient implements LlmClient {
 
         try {
             String body = buildRequestBody(modelName, request);
+
             HttpRequest httpRequest = HttpRequest.newBuilder(apiUrl)
                     .header("Authorization", "Bearer " + apiKey)
                     .header("Content-Type", "application/json")
@@ -61,7 +66,7 @@ public class CloudLlmClient implements LlmClient {
 
             if (response.statusCode() >= 300) {
                 throw new RuntimeException("LLM API error: " + response.statusCode() +
-                                           " body=" + response.body());
+                        " body=" + response.body());
             }
 
             return parseResponse(response.body());
@@ -73,16 +78,17 @@ public class CloudLlmClient implements LlmClient {
     }
 
     private String buildRequestBody(String modelName, LlmRequest request) throws IOException {
-        // Detta är medvetet generiskt — anpassas till vald leverantör.
         var root = objectMapper.createObjectNode();
         root.put("model", modelName);
-        root.put("max_tokens", request.maxTokens());
+
+        // classic Chat Completions-fält – funkar fint med 4.1/4.1-mini/5.1
+        root.put("max_completion_tokens", request.maxTokens());
         root.put("temperature", request.temperature());
 
         var messagesNode = root.putArray("messages");
         for (var msg : request.messages()) {
             var m = messagesNode.addObject();
-            m.put("role", msg.role().name().toLowerCase());
+            m.put("role", msg.role().name().toLowerCase()); // system/user/assistant
             m.put("content", msg.content());
         }
 
@@ -90,10 +96,9 @@ public class CloudLlmClient implements LlmClient {
     }
 
     private LlmResponse parseResponse(String body) throws IOException {
-        // Även detta är generellt – anpassa till faktisk JSON-struktur senare.
         JsonNode root = objectMapper.readTree(body);
 
-        // exempel: vi letar efter första "content"
+        // typisk struktur: choices[0].message.content + usage.*
         String content = root.at("/choices/0/message/content").asText("");
 
         long promptTokens = root.at("/usage/prompt_tokens").asLong(0);
