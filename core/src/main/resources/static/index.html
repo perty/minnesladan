@@ -68,6 +68,25 @@
             margin-top: 1.5rem;
         }
 
+        .answer-box {
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            background: #f0f4ff;
+            border: 1px solid #d0ddff;
+            white-space: pre-wrap;
+        }
+
+        .results h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .paragraph-list-title {
+            margin-top: 1.25rem;
+            margin-bottom: 0.25rem;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
         .paragraph {
             padding: 0.75rem 0;
             border-top: 1px solid #e0e0e0;
@@ -94,17 +113,20 @@
 </head>
 <body>
 <div class="container">
-    <h1>Minneslådan – kontexttest</h1>
+    <h1>Minneslådan – frågetest</h1>
 
     <div>
         <label for="question">Fråga</label>
         <textarea id="question" placeholder="Skriv en fråga om livshistorien här..."></textarea>
-        <button id="askButton">Hämta relevanta stycken</button>
+        <button id="askButton">Ställ fråga</button>
         <div id="status" class="status"></div>
     </div>
 
     <div class="results">
-        <h2>Resultat</h2>
+        <h2>Svar</h2>
+        <div id="answerBox" class="answer-box"></div>
+
+        <div class="paragraph-list-title">Använda stycken (kontext)</div>
         <div id="resultsContainer"></div>
     </div>
 </div>
@@ -114,6 +136,7 @@
     const askButton = document.getElementById('askButton');
     const statusEl = document.getElementById('status');
     const resultsContainer = document.getElementById('resultsContainer');
+    const answerBox = document.getElementById('answerBox');
 
     askButton.addEventListener('click', async () => {
         const question = questionInput.value.trim();
@@ -127,14 +150,15 @@
         statusEl.textContent = 'Skickar fråga...';
         statusEl.classList.remove('error');
         resultsContainer.innerHTML = '';
+        answerBox.textContent = '';
 
         try {
-            const response = await fetch('/api/context/query', {
+            const response = await fetch('/api/ask', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ question })
+                body: JSON.stringify({ question: question })
             });
 
             if (!response.ok) {
@@ -143,7 +167,8 @@
 
             const data = await response.json();
             renderResults(data);
-            statusEl.textContent = 'Klar. Hittade ' + (data.paragraphs?.length || 0) + ' stycken.';
+            const ctxLen = data.contextParagraphs ? data.contextParagraphs.length : 0;
+            statusEl.textContent = 'Klar. Använde ' + ctxLen + ' stycken som kontext.';
         } catch (err) {
             console.error(err);
             statusEl.textContent = 'Något gick fel: ' + err.message;
@@ -154,14 +179,18 @@
     });
 
     function renderResults(data) {
+        // Svarstext
+        answerBox.textContent = data.answer || '(Inget svar)';
+
+        // Kontextrader
         resultsContainer.innerHTML = '';
 
-        if (!data.paragraphs || data.paragraphs.length === 0) {
-            resultsContainer.textContent = 'Inga stycken hittades.';
+        if (!data.contextParagraphs || data.contextParagraphs.length === 0) {
+            resultsContainer.textContent = 'Inga stycken hittades eller användes.';
             return;
         }
 
-        data.paragraphs.forEach(p => {
+        data.contextParagraphs.forEach(p => {
             const div = document.createElement('div');
             div.className = 'paragraph';
 
