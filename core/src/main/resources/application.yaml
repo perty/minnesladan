@@ -7,3 +7,11 @@ spring:
   flyway:
     enabled: true
     locations: classpath:db/migration
+minnesladan:
+  llm:
+    cloud:
+      api-url: https://api.example.com/v1/chat/completions
+      api-key: YOUR_API_KEY
+      model:
+        high-capability: gpt-5.1
+        low-cost: gpt-5.1-mini
