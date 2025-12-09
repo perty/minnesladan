@@ -3,13 +3,13 @@ package se.minnesladan.core.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import se.minnesladan.core.database.Paragraph;
 
 @Service
-@Primary
+@Profile("fake-answers")
 public class FakeAnsweringService implements AnsweringService {
 
     @Override
