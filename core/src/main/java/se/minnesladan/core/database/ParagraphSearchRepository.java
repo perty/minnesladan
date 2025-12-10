@@ -1,12 +1,12 @@
 package se.minnesladan.core.database;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
-
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Repository;
 
 @Repository
 public class ParagraphSearchRepository {
@@ -20,12 +20,12 @@ public class ParagraphSearchRepository {
     /**
      * Uppdatera embedding för ett visst stycke.
      */
-    public void updateEmbedding(UUID paragraphId, float[] embedding) {
+    public void updateEmbedding(UUID paragraphId, float[] embedding, EmbeddingColumn column) {
         String sql = """
             UPDATE paragraph
-            SET embedding = ?::vector
+            SET %s = ?::vector
             WHERE id = ?
-            """;
+            """.formatted(column);
 
         String vectorLiteral = toPgVectorLiteral(embedding);
         jdbcTemplate.update(sql, vectorLiteral, paragraphId);
@@ -34,13 +34,13 @@ public class ParagraphSearchRepository {
     /**
      * Hämta alla id + content för stycken som saknar embedding.
      */
-    public List<Paragraph> findAllWithoutEmbedding() {
+    public List<Paragraph> findAllWithoutEmbedding(EmbeddingColumn column) {
         String sql = """
             SELECT id, section, position, content
             FROM paragraph
-            WHERE embedding IS NULL
+            WHERE %s IS NULL
             ORDER BY section, position
-            """;
+            """.formatted(column);
 
         return jdbcTemplate.query(sql, (rs, rowNum) -> mapRow(rs));
     }

@@ -22,11 +22,19 @@ public interface ParagraphRepository extends JpaRepository<Paragraph, UUID> {
     @Query(value = """
             SELECT *
             FROM paragraph
-            ORDER BY embedding <-> CAST(:queryEmbedding AS vector)
+            ORDER BY embedding_open_ai <-> CAST(:queryEmbedding AS vector)
             LIMIT :limit
             """, nativeQuery = true)
-    List<Paragraph> findNearestByEmbedding(@Param("queryEmbedding") String queryEmbedding,
-                                           @Param("limit") int limit);
+    List<Paragraph> findNearestByEmbeddingOpenAi(@Param("queryEmbedding") String queryEmbedding,
+                                                 @Param("limit") int limit);
 
+    @Query(value = """
+            SELECT *
+            FROM paragraph
+            ORDER BY embedding_on_prem <-> CAST(:queryEmbedding AS vector)
+            LIMIT :limit
+            """, nativeQuery = true)
+    List<Paragraph> findNearestByEmbeddingOnPrem(@Param("queryEmbedding") String queryEmbedding,
+                                                 @Param("limit") int limit);
 }
 
