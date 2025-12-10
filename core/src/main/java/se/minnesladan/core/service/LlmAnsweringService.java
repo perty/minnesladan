@@ -28,7 +28,10 @@ public class LlmAnsweringService implements AnsweringService {
 
     @Override
     public String answer(String question, List<Paragraph> context) {
+        return answerWithTier(question, context, ModelTier.HIGH_CAPABILITY);
+    }
 
+    public String answerWithTier(String question, List<Paragraph> context, ModelTier modelTier) {
         long start = System.currentTimeMillis();
         log.info("LLM-ASK: question=\"{}\"", question);
 
@@ -38,7 +41,7 @@ public class LlmAnsweringService implements AnsweringService {
 
         debugLogPrompt(messages);
 
-        LlmResponse response = getLlmResponse(messages);
+        LlmResponse response = getLlmResponse(messages, modelTier);
 
         long duration = System.currentTimeMillis() - start;
 
@@ -51,12 +54,12 @@ public class LlmAnsweringService implements AnsweringService {
         return response.content().trim();
     }
 
-    private LlmResponse getLlmResponse(List<LlmMessage> messages) {
+    private LlmResponse getLlmResponse(List<LlmMessage> messages, ModelTier modelTier) {
         return llmClient.complete(new LlmRequest(
                 messages,
                 MAX_TOKENS,
                 TEMPERATURE,
-                ModelTier.HIGH_CAPABILITY
+                modelTier
         ));
     }
 
