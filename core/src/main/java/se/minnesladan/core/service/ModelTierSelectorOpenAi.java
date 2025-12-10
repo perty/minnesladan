@@ -9,6 +9,6 @@ import se.minnesladan.core.llm.ModelTier;
 public class ModelTierSelectorOpenAi implements ModelTierSelector {
     @Override
     public ModelTier modelTier() {
-        return null;
+        return ModelTier.HIGH_CAPABILITY;
     }
 }
