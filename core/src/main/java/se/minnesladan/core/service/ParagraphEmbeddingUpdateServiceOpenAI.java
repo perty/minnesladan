@@ -1,8 +1,10 @@
 package se.minnesladan.core.service;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import se.minnesladan.core.database.EmbeddingColumn;
 import se.minnesladan.core.database.Paragraph;
 import se.minnesladan.core.database.ParagraphSearchRepository;
@@ -12,6 +14,8 @@ import java.util.List;
 @Service
 @Profile("openai-embeddings")
 public class ParagraphEmbeddingUpdateServiceOpenAI implements ParagraphEmbeddingUpdateService {
+
+    private static final Logger logger = LoggerFactory.getLogger(ParagraphEmbeddingUpdateServiceOpenAI.class);
 
     private final ParagraphSearchRepository searchRepository;
     private final EmbeddingService embeddingService;
@@ -32,6 +36,7 @@ public class ParagraphEmbeddingUpdateServiceOpenAI implements ParagraphEmbedding
         EmbeddingColumn column = EmbeddingColumn.OPEN_AI;
         List<Paragraph> paragraphs = searchRepository.findAllWithoutEmbedding(column);
         for (Paragraph p : paragraphs) {
+            logger.info("Updating embedding for paragraph {}", p.getPosition());
             float[] emb = embeddingService.createEmbedding(p.getContent());
             searchRepository.updateEmbedding(p.getId(), emb, column);
         }
