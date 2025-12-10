@@ -18,28 +18,6 @@ public class ParagraphSearchRepository {
     }
 
     /**
-     * Hitta de stycken vars embedding ligger närmast fråga-vektorn.
-     */
-    public List<Paragraph> findNearest(float[] queryEmbedding, int limit) {
-        String sql = """
-            SELECT id, section, position, content
-            FROM paragraph
-            WHERE embedding IS NOT NULL
-            ORDER BY embedding <-> ?::vector
-            LIMIT ?
-            """;
-
-        String vectorLiteral = toPgVectorLiteral(queryEmbedding);
-
-        return jdbcTemplate.query(
-                sql,
-                (rs, rowNum) -> mapRow(rs),
-                vectorLiteral,
-                limit
-        );
-    }
-
-    /**
      * Uppdatera embedding för ett visst stycke.
      */
     public void updateEmbedding(UUID paragraphId, float[] embedding) {

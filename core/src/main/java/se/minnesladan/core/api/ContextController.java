@@ -21,12 +21,12 @@ public class ContextController {
     }
    
     @PostMapping("/query")
-    public QueryResponse query(@RequestBody QueryRequest request) {
+    public RetrievalResponse query(@RequestBody RetrievalRequest request) {
         List<Paragraph> result = retrievalService.findRelevantParagraphs(
                 request.question(),
                 5 // just nu returnerar vi max 5 stycken
         );
 
-        return new QueryResponse(request.question(), result);
+        return new RetrievalResponse(request.question(), result);
     }
 }
