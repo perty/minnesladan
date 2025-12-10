@@ -5,15 +5,18 @@ import se.minnesladan.core.database.Paragraph;
 import se.minnesladan.core.llm.LlmMessage;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class PromptBuilder {
 
+    private final ContextFormatter contextFormatter;
+
+    public PromptBuilder(ContextFormatter contextFormatter) {
+        this.contextFormatter = contextFormatter;
+    }
+
     public List<LlmMessage> buildAnswerMessages(String question, List<Paragraph> context) {
-        String contextText = context.stream()
-                .map(p -> "- " + p.getContent())
-                .collect(Collectors.joining("\n\n"));
+        String contextText = contextFormatter.formatWithHeadings(context);
 
         String systemPrompt = """
                     Du är Minneslådan, men du talar med rösten hos personen som den här berättelsen handlar om.

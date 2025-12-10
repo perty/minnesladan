@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface ParagraphRepository extends JpaRepository<Paragraph, UUID> {
@@ -30,5 +31,10 @@ public interface ParagraphRepository extends JpaRepository<Paragraph, UUID> {
             """, nativeQuery = true)
     List<Paragraph> findNearestByEmbeddingOnPrem(@Param("queryEmbedding") String queryEmbedding,
                                                  @Param("limit") int limit);
+
+    Optional<Paragraph> findTopBySectionAndPositionLessThanAndIsHeadingTrueOrderByPositionDesc(
+            String section,
+            int position
+    );
 }
 
