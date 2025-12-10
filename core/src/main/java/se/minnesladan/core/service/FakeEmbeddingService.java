@@ -1,8 +1,9 @@
 package se.minnesladan.core.service;
 
-import java.nio.charset.StandardCharsets;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * Enkel fake-implementation:
@@ -10,14 +11,14 @@ import org.springframework.stereotype.Service;
  * Senare kan du ersätta den med en riktig modell.
  */
 @Service
-@Primary
+@Profile("fake-embeddings")
 public class FakeEmbeddingService implements EmbeddingService {
 
     private static final int DIM = 1536; // måste matcha din VECTOR-dimension i DB om du vill använda pgvector på riktigt
 
     @Override
     public float[] createEmbedding(String text) {
-       float[] v = new float[DIM];
+        float[] v = new float[DIM];
         byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
 
         for (int i = 0; i < bytes.length; i++) {
