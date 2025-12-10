@@ -26,9 +26,9 @@ public class OnPremEmbeddingService implements EmbeddingService {
 
     public OnPremEmbeddingService(
             ParagraphRepository paragraphRepository,
-            @Value("${minnesladan.embedding.onprem.api-url:http://localhost:11434/v1/embeddings}")
+            @Value("${minnesladan.embedding.onprem.api-url:http://localhost:11434/api/embeddings}")
             URI apiUrl,
-            @Value("${minnesladan.embedding.onprem.model:llama3.2}")
+            @Value("${minnesladan.embedding.onprem.model}")
             String model
     ) {
         this.paragraphRepository = paragraphRepository;
@@ -41,7 +41,7 @@ public class OnPremEmbeddingService implements EmbeddingService {
         try {
             var root = objectMapper.createObjectNode();
             root.put("model", model);
-            root.put("input", text);
+            root.put("prompt", text);
 
             String body = objectMapper.writeValueAsString(root);
 
@@ -59,7 +59,8 @@ public class OnPremEmbeddingService implements EmbeddingService {
             }
 
             JsonNode json = objectMapper.readTree(response.body());
-            JsonNode embeddingNode = json.at("/data/0/embedding");
+            JsonNode embeddingNode = json.path("embedding");
+
             int dim = embeddingNode.size();
             float[] v = new float[dim];
             for (int i = 0; i < dim; i++) {

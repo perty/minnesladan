@@ -18,3 +18,7 @@ minnesladan:
     onprem:
       api-url: http://localhost:11434/v1/chat/completions
       model: llama3.2
+  embedding:
+    onprem:
+      api-url: http://localhost:11434/api/embeddings
+      model: embeddinggemma

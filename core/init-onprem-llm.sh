@@ -10,3 +10,4 @@ curl http://localhost:11434/v1/chat/completions \
         "messages": [{"role":"user","content":"Hej! Säg att detta fungerar."}]
       }'
 
+docker exec ollama ollama pull embeddinggemma
