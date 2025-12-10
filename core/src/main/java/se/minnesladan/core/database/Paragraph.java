@@ -20,13 +20,16 @@ public class Paragraph {
     @Column(nullable = false)
     private String content;
 
+    private boolean isHeading;
+
     public Paragraph() {}
 
-    public Paragraph(UUID id, String section, Integer position, String content) {
+    public Paragraph(UUID id, String section, Integer position, String content, boolean isHeading) {
         this.id = id;
         this.section = section;
         this.position = position;
         this.content = content;
+        this.isHeading = isHeading;
     }
 
     public UUID getId() {
@@ -61,5 +64,11 @@ public class Paragraph {
         this.content = content;
     }
 
-    // getters och setters
+    public boolean isHeading() {
+        return isHeading;
+    }
+
+    public void setHeading(boolean heading) {
+        isHeading = heading;
+    }
 }

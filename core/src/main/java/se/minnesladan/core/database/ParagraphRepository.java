@@ -14,6 +14,7 @@ public interface ParagraphRepository extends JpaRepository<Paragraph, UUID> {
     @Query(value = """
             SELECT *
             FROM paragraph
+            WHERE is_heading = false
             ORDER BY embedding_open_ai <-> CAST(:queryEmbedding AS vector)
             LIMIT :limit
             """, nativeQuery = true)
@@ -23,6 +24,7 @@ public interface ParagraphRepository extends JpaRepository<Paragraph, UUID> {
     @Query(value = """
             SELECT *
             FROM paragraph
+            WHERE is_heading = false
             ORDER BY embedding_on_prem <-> CAST(:queryEmbedding AS vector)
             LIMIT :limit
             """, nativeQuery = true)

@@ -36,7 +36,7 @@ public class ParagraphSearchRepository {
      */
     public List<Paragraph> findAllWithoutEmbedding(EmbeddingColumn column) {
         String sql = """
-            SELECT id, section, position, content
+            SELECT id, section, position, content, is_heading
             FROM paragraph
             WHERE %s IS NULL
             ORDER BY section, position
@@ -62,7 +62,8 @@ public class ParagraphSearchRepository {
                 (UUID) rs.getObject("id"),
                 rs.getString("section"),
                 (Integer) rs.getObject("position"),
-                rs.getString("content")
+                rs.getString("content"),
+                rs.getBoolean("is_heading")
         );
     }
 }

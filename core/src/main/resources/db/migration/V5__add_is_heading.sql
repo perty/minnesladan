@@ -1,0 +1,1 @@
+alter table paragraph add column is_heading bool not null default false;
