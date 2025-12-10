@@ -33,17 +33,19 @@ class LlmComparisonTest {
         assertFalse(context.isEmpty());
 
         String answerHigh = answeringService.answerWithTier(question, context, ModelTier.HIGH_CAPABILITY);
-
-        String answerLow = answeringService.answerWithTier(question, context, ModelTier.LOW_COST);
-
         System.out.println("HIGH_CAPABILITY: " + answerHigh);
+        String answerLow = answeringService.answerWithTier(question, context, ModelTier.LOW_COST);
         System.out.println("LOW_COST      : " + answerLow);
+        String answerOnPrem = answeringService.answerWithTier(question, context, ModelTier.ON_PREM);
+        System.out.println("ON_PREM      : " + answerOnPrem);
 
         // 4. Enkla assertions: båda ska få med nyckelfaktan "sjuksköterska"
         assertTrue(answerHigh.toLowerCase().contains("sjuksköterska"),
                 "Dyra modellen ska nämna 'sjuksköterska'");
         assertTrue(answerLow.toLowerCase().contains("sjuksköterska"),
                 "Billiga modellen ska nämna 'sjuksköterska'");
+        assertTrue(answerOnPrem.toLowerCase().contains("sjuksköterska"),
+                "Onprem modellen ska nämna 'sjuksköterska'");
     }
 
 }

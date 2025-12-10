@@ -15,3 +15,6 @@ minnesladan:
       model:
         high-capability: gpt-5.1
         low-cost: gpt-4.1-mini
+    onprem:
+      api-url: http://localhost:11434/v1/chat/completions
+      model: llama3.2
