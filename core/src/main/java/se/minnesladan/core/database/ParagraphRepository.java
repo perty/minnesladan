@@ -11,14 +11,6 @@ public interface ParagraphRepository extends JpaRepository<Paragraph, UUID> {
 
     void deleteBySection(String section);
 
-    @Query("""
-            SELECT p
-            FROM Paragraph p
-            WHERE LOWER(p.content) LIKE LOWER(CONCAT('%', :term, '%'))
-            ORDER BY p.section, p.position
-            """)
-    List<Paragraph> searchByContentLike(@Param("term") String term);
-
     @Query(value = """
             SELECT *
             FROM paragraph
