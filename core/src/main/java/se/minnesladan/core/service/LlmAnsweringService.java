@@ -19,15 +19,17 @@ public class LlmAnsweringService implements AnsweringService {
 
     private final LlmClient llmClient;
     private final PromptBuilder promptBuilder;
+    private final ModelTierSelector modelTierSelector;
 
-    public LlmAnsweringService(LlmClient llmClient, PromptBuilder promptBuilder) {
+    public LlmAnsweringService(LlmClient llmClient, ModelTierSelector modelTierSelector, PromptBuilder promptBuilder) {
         this.llmClient = llmClient;
+        this.modelTierSelector = modelTierSelector;
         this.promptBuilder = promptBuilder;
     }
 
     @Override
     public String answer(String question, List<Paragraph> context) {
-        return answerWithTier(question, context, ModelTier.HIGH_CAPABILITY);
+        return answerWithTier(question, context, modelTierSelector.modelTier());
     }
 
     public String answerWithTier(String question, List<Paragraph> context, ModelTier modelTier) {
