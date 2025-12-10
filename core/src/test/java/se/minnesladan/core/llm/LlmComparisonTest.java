@@ -27,7 +27,7 @@ class LlmComparisonTest {
 
     @Test
     void compareHighCapabilityAndLowCost() {
-        String question = "Vad jobbade min mamma med?";
+        String question = "Vad jobbade din mamma med?";
 
         List<Paragraph> context = contextRetrievalService.findRelevantParagraphs(question, 10);
         assertFalse(context.isEmpty());

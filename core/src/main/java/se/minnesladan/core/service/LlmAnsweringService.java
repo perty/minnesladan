@@ -16,7 +16,6 @@ public class LlmAnsweringService implements AnsweringService {
 
     private static final Logger log = LoggerFactory.getLogger(LlmAnsweringService.class);
     private static final int MAX_TOKENS = 512;
-    private static final double TEMPERATURE = 0.2;
 
     private final LlmClient llmClient;
     private final PromptBuilder promptBuilder;
@@ -58,9 +57,16 @@ public class LlmAnsweringService implements AnsweringService {
         return llmClient.complete(new LlmRequest(
                 messages,
                 MAX_TOKENS,
-                TEMPERATURE,
+                temperature(modelTier),
                 modelTier
         ));
+    }
+
+    private double temperature(ModelTier modelTier) {
+        return switch (modelTier) {
+            case HIGH_CAPABILITY, LOW_COST -> 0.2;
+            case ON_PREM -> 0.0;
+        };
     }
 
     private void debugLogContext(List<Paragraph> context) {
