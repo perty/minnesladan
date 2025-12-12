@@ -2,7 +2,6 @@ package se.minnesladan.core.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import se.minnesladan.core.database.Paragraph;
 import se.minnesladan.core.llm.*;
@@ -11,7 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Primary
 public class LlmAnsweringService implements AnsweringService {
 
     private static final Logger log = LoggerFactory.getLogger(LlmAnsweringService.class);
