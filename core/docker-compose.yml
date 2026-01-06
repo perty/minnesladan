@@ -11,6 +11,34 @@ services:
     volumes:
       - ollama-data:/root/.ollama
     restart: unless-stopped
-
+  db:
+    image: ankane/pgvector:latest
+    container_name: minnesladan-db
+    environment:
+      POSTGRES_DB: minnesladan
+      POSTGRES_USER: minnesladan
+      POSTGRES_PASSWORD: minnesladan
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+  app:
+    image: minnesladan-app:latest
+    container_name: minnesladan-app
+    environment:
+      SPRING_PROFILES_ACTIVE: docker, onprem-embeddings, onprem-chat
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/minnesladan
+      SPRING_DATASOURCE_USERNAME: minnesladan
+      SPRING_DATASOURCE_PASSWORD: minnesladan
+      OLLAMA_CHAT_URL: http://ollama:11434/v1/chat/completions
+      OLLAMA_EMBEDDING_URL: http://ollama:11434/api/embeddings
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+      - ollama
+    restart: unless-stopped
 volumes:
   ollama-data:
+  postgres-data:

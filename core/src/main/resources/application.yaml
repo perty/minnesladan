@@ -11,14 +11,14 @@ minnesladan:
   llm:
     cloud:
       api-url: https://api.openai.com/v1/chat/completions
-      api-key: ${OPENAI_API_KEY}
+      api-key: ${OPENAI_API_KEY:nokeyprovided}
       model:
         high-capability: gpt-5.1
         low-cost: gpt-4.1-mini
     onprem:
-      api-url: http://localhost:11434/v1/chat/completions
+      api-url: ${OLLAMA_CHAT_URL:http://localhost:11434/v1/chat/completions}
       model: llama3.2
   embedding:
     onprem:
-      api-url: http://localhost:11434/api/embeddings
+      api-url: ${OLLAMA_EMBEDDING_URL:http://localhost:11434/api/embeddings}
       model: embeddinggemma
