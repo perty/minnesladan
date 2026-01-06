@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-CONTAINER_NAME="minnesladan-db"
+CONTAINER_NAME="minnesladan-local-db"
 # Use image with pgvector pre-installed
 IMAGE="ankane/pgvector:latest"
 HOST_PORT=5432
