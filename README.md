@@ -7,3 +7,28 @@ En låda med minnen från mitt liv ihopkopplat med AI för att kunna ställa fr�
 - Språkmodeller för att hitta fakta i en stor text
 - Fristående från nätet
   
+## Provköra
+
+Du behöver ha [Docker](https://docker.com) installerat. Om du inte har en aning om vad det är så är det korta svaret ett sätt att köra flera servrar på en dator isolerade från varandra och från värddatorn.
+
+### 1. Bygg
+Gå till katalogen `core` som har en fil `Dockerfile`. Den definierar hur appen byggs. Första gången tar det lång tid för den behöver ladda ner allting som krävs. Kör följande kommando:
+
+`docker build .`
+
+Notera punkten. Bygget skapar en `image` för appen.
+
+### 2. Starta
+
+Nästa steg är att köra appen tillsammans med en databas och en AI-modell.
+
+`docker compose up`
+
+### 3. Använd
+
+Nu finns appen tillgänglig på http://localhost:8080.
+
+Det första du vill göra är att gå in på Admin och ladda in den fejkstory som finns inbyggd. Kräver bara en knapptryckning.
+
+Sedan kan du ställa frågor till personen bakom fejkstoryn.
+
