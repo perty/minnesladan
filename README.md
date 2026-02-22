@@ -14,7 +14,7 @@ Du behöver ha [Docker](https://docker.com) installerat. Om du inte har en aning
 ### 1. Bygg
 Gå till katalogen `core` som har en fil `Dockerfile`. Den definierar hur appen byggs. Första gången tar det lång tid för den behöver ladda ner allting som krävs. Kör följande kommando:
 
-`docker build .`
+`docker build -t minnesladan:latest .`
 
 Notera punkten. Bygget skapar en `image` för appen.
 
