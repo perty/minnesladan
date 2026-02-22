@@ -8,9 +8,8 @@
         button { background:#b30000; color:#fff; border:0; padding:12px 20px; font-size:16px; cursor:pointer; border-radius:6px; }
         button:hover { background:#e60000; }
         button:disabled { opacity:0.6; cursor:not-allowed; }
+        a { color: #eee }
         #result { margin-top:20px; padding:12px; border-radius:6px; white-space:pre-wrap; }
-        .success { background:#1f4d1f; }
-        .error { background:#4d1f1f; }
         .info { background:#222; }
     </style>
 </head>
@@ -22,7 +21,7 @@
 <button id="importBtn" onclick="importStory()">Ladda in fake story</button>
 
 <div id="result" class="info">Redo.</div>
-
+<a href="/">Tillbaka</a>
 <script>
     async function importStory() {
         const btn = document.getElementById("importBtn");
