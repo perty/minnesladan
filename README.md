@@ -32,3 +32,11 @@ Det första du vill göra är att gå in på Admin och ladda in den fejkstory so
 
 Sedan kan du ställa frågor till personen bakom fejkstoryn.
 
+## Utveckla
+
+För att jobba med appen så kör du den i din utvecklingsmiljö som vanligt. Det är en Spring Boot app som byggs med Maven. GUI är standard HTML och Javascript.
+
+Du behöver köra de andra två delarna, databas och AI-modell för att kunna testa. 
+
+För att uppdatera datbasmodellen så skriver du ett script. Se `src/main/resources/db/migration`.
+
