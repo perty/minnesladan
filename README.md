@@ -20,6 +20,9 @@ Gå till katalogen `core` som har en fil `Dockerfile`. Den definierar hur appen 
 
 Notera punkten. Bygget skapar en `image` för appen.
 
+För att ladda ner LLM till Ollama så kör du:
+[init-onprem-llm.sh](core/init-onprem-llm.sh).
+
 ### 2. Starta
 
 Nästa steg är att köra appen tillsammans med en databas och en AI-modell.
@@ -33,6 +36,8 @@ Nu finns appen tillgänglig på http://localhost:8080.
 Det första du vill göra är att gå in på Admin och ladda in den fejkstory som finns inbyggd. Kräver bara en knapptryckning.
 
 Sedan kan du ställa frågor till personen bakom fejkstoryn.
+
+Se också: [StoryImportService.java](core/src/main/java/se/minnesladan/core/service/StoryImportService.java).
 
 ## Utveckla
 
