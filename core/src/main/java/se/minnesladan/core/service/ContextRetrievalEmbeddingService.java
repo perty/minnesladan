@@ -55,7 +55,6 @@ public class ContextRetrievalEmbeddingService implements ContextRetrievalService
             if (i > 0) {
                 sb.append(',');
             }
-            // Viktigt: punkt som decimal, inte komma
             sb.append(v[i]);
         }
         sb.append(']');
