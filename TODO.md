@@ -1,0 +1,2 @@
+ - Designa hårdvara
+ - Ladda upp egen story i GUI
